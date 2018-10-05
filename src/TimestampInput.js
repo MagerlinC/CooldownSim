@@ -28,7 +28,6 @@ class TimestampInput extends Component {
                 names.push(cd.name);
             }
         });
-        console.log('Auto complete found ', names);
         return names;
     }
 
@@ -42,7 +41,7 @@ class TimestampInput extends Component {
         }
     }
 
-    handleAddMe(index) {
+    handleAcceptSuggestion(index) {
         let cooldown = null;
         cds.list.forEach(cd => {
             if(cd.name === this.state.suggestions[index]) {
@@ -69,16 +68,18 @@ class TimestampInput extends Component {
     render() {
         return (
             <div className="timestamp-input">
-                <input placeholder={this.props.placeholder} value={this.props.value} onKeyDown={e => this.handleKeyPress(e)} onChange={e => this.handleChange(e)}/>
+                <input ref={(input) => this.props.refFunction ? this.props.refFunction(input): null} placeholder={this.props.placeholder}
+                       onBlur={() => this.props.onBlur ? this.props.onBlur() : null}
+                       value={this.props.value} onKeyDown={e => this.handleKeyPress(e)} onChange={e => this.handleChange(e)}/>
                 {
-                    this.props.onDelete ? <img className="delete-x" src={deleteX} onClick={() => this.props.onDelete()}/> : null
+                    this.props.onDelete ? <img className="delete-x" src={deleteX} onClick={() => this.props.onDelete(this.props.id)}/> : null
                 }
                 {
                     this.props.showSuggestions && this.state.suggestions.length > 0 ?
                         <div className="suggestion-list">
                             {
                                 this.state.suggestions.map((suggestion, index) => (
-                                    <div key={index} onClick={() => this.handleAddMe(index)} className="suggestion-item">{suggestion}</div>
+                                    <div key={index} onClick={() => this.handleAcceptSuggestion(index)} className="suggestion-item">{suggestion}</div>
                                 ))
                             }
                         </div> : null

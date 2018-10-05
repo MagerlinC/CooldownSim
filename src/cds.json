@@ -5,12 +5,20 @@
       {
         "name": "Aura Mastery",
         "cooldown": 180,
-        "class": "Paladin"}
+        "class": "Paladin"
+      }
+    ,
+      {
+        "name": "Avenging Wrath",
+        "cooldown": 180,
+        "class": "Paladin"
+      }
     ,
       {
         "name": "Avenging Crusader",
         "cooldown": 120,
-        "class": "Paladin"}
+        "class": "Paladin"
+      }
     ,
       {
         "name": "Holy Word: Salvation (4min)",
