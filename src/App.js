@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.scss';
+import {cds} from './cds.json';
 import TimestampInput from "./TimestampInput";
 
 class App extends Component {
@@ -7,7 +8,7 @@ class App extends Component {
         super(props);
         this.state = {
             inputTimeStamps: this.getLocalStorageTimestamps(),
-            inputCDs: [{name: 'Aura Mastery', person: "Paladin1", cooldown: 180}, {name: 'Tranquility (2min)', person: "Druid1", cooldown: 120}, {name: 'Revival', person: "Monk1", cooldown: 180}],
+            inputCDs: [{name: 'Aura Mastery', person: "Paladin", cooldown: 180}, {name: 'Tranquility (2min)', person: "Druid", cooldown: 120}, {name: 'Revival', person: "Monk", cooldown: 180}],
             newTimestampInputLabelValue: '',
             newTimestampInputTimeValue: '',
             newCooldownNameInputValue: '',
@@ -152,11 +153,22 @@ class App extends Component {
         this.setState({newCooldownInputValue: e.target.value});
     }
 
+    getAppropriateNameForCd(cdName) {
+        let person = 'UNKNOWN';
+        cds.list.forEach(cd => {
+            if(cd.name === cdName) {
+                person = cd.class;
+            }
+        });
+        return person;
+    }
+
     handleAddNewCDInput() {
-        if(this.state.newCooldownInputValue && this.state.newCooldownNameInputValue && this.state.newCooldownPersonInputValue) {
+        if(this.state.newCooldownInputValue && this.state.newCooldownNameInputValue) {
+            let person = this.state.newCooldownPersonInputValue ? this.state.newCooldownPersonInputValue : this.getAppropriateNameForCd(this.state.newCooldownNameInputValue);
             this.setState(prevState => {
                 let cds = prevState.inputCDs.slice();
-                cds.push({name: this.state.newCooldownNameInputValue, person: this.state.newCooldownPersonInputValue, cooldown: this.state.newCooldownInputValue});
+                cds.push({name: this.state.newCooldownNameInputValue, person: person, cooldown: this.state.newCooldownInputValue});
                 return {inputCDs: cds, newCooldownPersonInputValue: '', newCooldownNameInputValue: '', newCooldownInputValue: ''}
             });
         }
