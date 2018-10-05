@@ -36,6 +36,7 @@ class App extends Component {
                 t.time = newVal;
             }
         });
+        ts.sort(this.sortAsNumber);
         localStorage.setItem('timestamps', JSON.stringify(ts));
         this.setState(prevState => {
             let timeStamps = prevState.inputTimeStamps.slice();
@@ -61,6 +62,7 @@ class App extends Component {
                 t.label = newVal;
             }
         });
+        ts.sort(this.sortAsNumber);
         localStorage.setItem('timestamps', JSON.stringify(ts));
 
         this.setState(prevState => {
@@ -103,6 +105,7 @@ class App extends Component {
         if(timeVal) {
             let ts = JSON.parse(localStorage.getItem('timestamps'));
             ts.push({id: id, label: labelVal, time: timeVal});
+            ts.sort(this.sortAsNumber);
             localStorage.setItem('timestamps', JSON.stringify(ts));
             this.setState(prevState => {
                     let timeStamps = prevState.inputTimeStamps.slice();
@@ -274,8 +277,6 @@ class App extends Component {
                         cd = cds[j];
                         numCDsUsedForMultiUsage++;
                     }
-
-
                 }
                 else {
                     //time since last use of CD is smaller than the CD's cooldown
@@ -414,7 +415,6 @@ class App extends Component {
                             <TimestampInput placeholder={"Input new timestamp label (optional)"} value={this.state.newTimestampInputLabelValue} onKeyPress={() => this.handleAddNewTimestamp()} onChange={e => this.handleNewInputLabelChange(e)}/>
                             <TimestampInput refFunction={ref => this.handleGotRef(ref)} placeholder={"Input new timestamp time"} value={this.state.newTimestampInputTimeValue} onKeyPress={() => this.handleAddNewTimestamp()} onChange={e => this.handleNewInputTimeChange(e)}/>
                             <p className="tooltip">Timestamps can be input as minutes:seconds or seconds</p>
-                            <div className="placeholder"/>
                         </div>
                         <button className="add-button" onClick={() => this.handleAddNewTimestamp()}>Add Timestamp</button>
                     </div>
@@ -422,7 +422,7 @@ class App extends Component {
                         <div className="double-input">
                             <TimestampInput showSuggestions={true} onAdd={(name, cooldown) => this.handleAutocomplete(name, cooldown)} placeholder={"Input new CD Name"} value={this.state.newCooldownNameInputValue} onKeyPress={() => this.handleAddNewCDInput()} onChange={e => this.handleNewCDNameInputChange(e)}/>
                             <TimestampInput placeholder={"Input new CD Cooldown"}  value={this.state.newCooldownInputValue} onKeyPress={() => this.handleAddNewCDInput()} onChange={e => this.handleNewCDInputChange(e)}/>
-                            <TimestampInput placeholder={"Input new CD Player"}  value={this.state.newCooldownPersonInputValue} onKeyPress={() => this.handleAddNewCDInput()} onChange={e => this.handleNewCDPersonInputChange(e)}/>
+                            <TimestampInput placeholder={"Input new CD Player (optional)"}  value={this.state.newCooldownPersonInputValue} onKeyPress={() => this.handleAddNewCDInput()} onChange={e => this.handleNewCDPersonInputChange(e)}/>
                         </div>
                         <button className="add-button" onClick={() => this.handleAddNewCDInput()}>Add Cooldown</button>
                     </div>
