@@ -1,10 +1,15 @@
+$main-color: #101010;
+$accent-color: rgb(6, 37, 68);
+
+
+
 html {
   font-family: 'Roboto', sans-serif;
 }
 .App {
   font-family: 'Roboto', sans-serif;
   text-align: center;
-  background-color: #101010;
+  background: $accent-color url(https://dmszsuqyoe6y6.cloudfront.net/img/warcraft/header-bg.jpg?v=3);
   color: white;
   min-height: 100vh;
   padding-bottom: 15px;
@@ -22,7 +27,7 @@ html {
 .tooltip {
   position: relative;
   text-align: left;
-  font-size: 10px;
+  font-size: 11px;
   font-style: italic;
   color: grey;
   left: 10%;
@@ -45,7 +50,7 @@ html {
   table-layout: fixed;
   background-color: grey;
   .solution-table-head {
-    background-color: #0F0F0F;
+    background-color: $accent-color;
   }
   th {
     font-size: 15px;
@@ -75,7 +80,7 @@ html {
     cursor: pointer;
   }
   .suggestion-item:hover {
-    background-color: black;
+    background-color: $accent-color;
   }
 }
 
@@ -104,7 +109,7 @@ html {
   display: flex;
   margin: 10px;
   flex-direction: column;
-  background-color: #101010;
+  background-color: $main-color;
   table, tbody, thead {
     position: relative;
   }
@@ -125,44 +130,32 @@ tr {
 
 .add-button {
   position: relative;
-  background-color: rgb(6, 37, 68);
+  background-color: $accent-color;
   color: white;
   border: none;
   height: 30px;
   width: 150px;
   margin-top: 40px;
+  margin-bottom: 40px;
 }
 
-.inputs-section {
-  display: flex;
-  flex-direction: row;
-  margin-top: 25px;
-  .double-input {
-    .timestamp-input {
-      flex-grow: 1;
-      width: 100%;
-    }
-  }
-  .input-section-timestamp, .input-section-cooldowns {
-    max-width: 50%;
+.double-input {
+  margin-top: 40px;
+  .timestamp-input {
+    margin: 3px 0;
     flex-grow: 1;
-    margin-bottom: 25px;
-    position: relative;
-    .timestamp-input {
-      input {
-        width: 80%;
-      }
-    }
+    width: 100%;
   }
 }
 
 .simulate-button {
+  font-weight: bold;
   border: none;
   width: 150px;
   height: 45px;
   text-transform: uppercase;
   color: white;
-  background-color: rgb(6, 37, 68);
+  background-color: $accent-color;
 }
 
 .timestamp-input {
@@ -196,8 +189,8 @@ tr {
 .tables-container {
   position: relative;
   width: 100%;
-  max-height: 50vh;
-  overflow: auto;
+  //max-height: 50vh;
+  //overflow: auto;
   display: flex;
   flex-direction: row;
 }
@@ -221,6 +214,7 @@ tr {
   color: white;
 }
 .app-header {
+  margin-bottom: 40px;
   width: 100%;
   .app-header-title {
     padding: 16px 6px 6px 4px;
@@ -229,20 +223,8 @@ tr {
     height: 50px;
     white-space: nowrap;
     font-size: 30px;
-    background-color: rgb(6, 37, 68);
+    background-color: $main-color;
+    border-bottom: 1px solid grey;
   }
 }
 
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}

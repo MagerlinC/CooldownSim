@@ -7,8 +7,9 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            slack: 4,
             inputTimeStamps: this.getLocalStorageTimestamps(),
-            inputCDs: [{name: 'Aura Mastery', person: "Paladin", cooldown: 180}, {name: 'Tranquility (2min)', person: "Druid", cooldown: 120}, {name: 'Revival', person: "Monk", cooldown: 180}],
+            inputCDs: [{name: 'Aura Mastery', person: "Paladin", cooldown: 180}],
             newTimestampInputLabelValue: '',
             newTimestampInputTimeValue: '',
             newCooldownNameInputValue: '',
@@ -21,8 +22,8 @@ class App extends Component {
     getLocalStorageTimestamps() {
         let timestamps = JSON.parse(localStorage.getItem('timestamps'));
         if(!timestamps) {
-            localStorage.setItem('timestamps', JSON.stringify([{id: 'AA00', label: 'Example1', time: 60}]));
-            return [{label: 'Example1', time: 60}];
+            localStorage.setItem('timestamps', JSON.stringify([{id: 'AA00', label: 'Example Timestamp', time: 60}]));
+            return [{label: 'Example Timestamp', time: 60}];
         }
         return timestamps;
     }
@@ -90,7 +91,7 @@ class App extends Component {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
                 .substring(1);
-            }
+        }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
@@ -108,11 +109,11 @@ class App extends Component {
             ts.sort(this.sortAsNumber);
             localStorage.setItem('timestamps', JSON.stringify(ts));
             this.setState(prevState => {
-                    let timeStamps = prevState.inputTimeStamps.slice();
-                    timeStamps.push({id: id, label: labelVal, time: timeVal});
-                    timeStamps.sort(this.sortAsNumber);
-                    return {inputTimeStamps: timeStamps, newTimestampInputTimeValue: '', newTimestampInputLabelValue: ''}
-                });
+                let timeStamps = prevState.inputTimeStamps.slice();
+                timeStamps.push({id: id, label: labelVal, time: timeVal});
+                timeStamps.sort(this.sortAsNumber);
+                return {inputTimeStamps: timeStamps, newTimestampInputTimeValue: '', newTimestampInputLabelValue: ''}
+            });
         }
         this.newTimestampLabelInputRef.focus();
     }
@@ -231,7 +232,7 @@ class App extends Component {
 
     getMaxPossibleCDUsesInTotalTime(cd, totalTime) {
         //No decimals
-        let fraction = totalTime/cd.cooldown;
+        let fraction = totalTime/(cd.cooldown - this.state.slack);
         return Math.floor(fraction);
     }
 
@@ -248,6 +249,8 @@ class App extends Component {
     simulateBestSetup() {
         let timeStamps = this.state.inputTimeStamps.slice();
         let cds = this.state.inputCDs.slice();
+
+        let slack = this.state.slack;
 
         let numCds = cds.length;
         let numTimestamps = timeStamps.length;
@@ -267,41 +270,55 @@ class App extends Component {
 
         for(let i = 0; i < timeStamps.length; i++) {
             let cd = null;
+            if(numCds === 1 && cds[0].maxUses <= 1 && this.getTimeSinceLastUse(cds[0], timeStamps[i], solution)) {
+                cd = cds[0];
+            }
             for(let j = 0; j < cds.length && cd === null; j++) {
                 // We still need more CDs than there are
                 if(numCds + numCDsUsedForMultiUsage < numTimestamps) {
                     let timeSince = this.getTimeSinceLastUse(cds[j], timeStamps[i].time, solution);
                     // CD is ready and still has multiple uses left
-                    if(cds[j].maxUses >= cds[j].uses + 1 && (timeSince >= cds[j].cooldown)) {
-                        console.log('Adding CD that can be used twice ', cds[j]);
+                    if(cds[j].maxUses >= cds[j].uses + 1 && (timeSince + slack >= cds[j].cooldown)) {
                         cd = cds[j];
                         numCDsUsedForMultiUsage++;
+                        if(!(timeSince >= cds[j].cooldown)) {
+                            cd.slackUsed = (cds[j].cooldown - timeSince);
+                        }
                     }
                 }
                 else {
                     //time since last use of CD is smaller than the CD's cooldown
                     let timeSince = this.getTimeSinceLastUse(cds[j], timeStamps[i].time, solution);
-                    if(timeSince >= cds[j].cooldown) {
+                    if(timeSince + slack >= cds[j].cooldown) {
                         cd = cds[j];
+                        if(timeSince < cds[j].cooldown) {
+                            console.log('Register slack');
+                            cd.slackUsed = (cds[j].cooldown - timeSince);
+                        }
                     }
+
                 }
             }
             if(cd) {
                 cd.uses = (cd.uses ? cd.uses + 1 : 1);
-                solution.push({name: cd.name, person: cd.person, cooldown: cd.cooldown, timestamp: timeStamps[i]});
+                solution.push({name: cd.name, person: cd.person, cooldown: cd.cooldown, timestamp: timeStamps[i], slackUsed: cd.slackUsed});
             }
             // No CDs for multi use was found, so we try single use
             else {
                 for(let k = 0; k < cds.length && cd === null; k++) {
                     let timeSince = this.getTimeSinceLastUse(cds[k], timeStamps[i].time, solution);
-                    if(cds[k].maxUses > cds[k].uses && (timeSince >= cds[k].cooldown)) {
-                        console.log('Adding CD that can be used once ', cds[k]);
+                    if(cds[k].maxUses > cds[k].uses && (timeSince + slack >= cds[k].cooldown)) {
                         cd = cds[k];
+                        if(timeSince < cds[k].cooldown) {
+                            console.log('Register slack');
+                            cd.slackUsed = (cds[k].cooldown - timeSince);
+                        }
+
                     }
                 }
                 if(cd) {
                     cd.uses = (cd.uses ? cd.uses + 1 : 1);
-                    solution.push({name: cd.name, person: cd.person, cooldown: cd.cooldown, timestamp: timeStamps[i]});
+                    solution.push({name: cd.name, person: cd.person, cooldown: cd.cooldown, timestamp: timeStamps[i], slackUsed: cd.slackUsed});
                 } else solution.push({name: 'N/A', person: 'N/A', cooldown: 0, timestamp: timeStamps[i]});
             }
 
@@ -333,12 +350,10 @@ class App extends Component {
                 <div className="app-header">
                     <h1 className="app-header-title">Optimal Healer CD Simulator</h1>
                 </div>
-                <div className="app-description-wrapper">
-                    <p className="app-description">Input timestamps for the fight below</p>
-                    <p className="app-description">Input available CDs on your team below</p>
-                </div>
                 <div className="tables-container">
                     <div className="timestamps-section">
+                        <p className="app-description">Input timestamps for the fight below</p>
+
                         <table className="timestamps-table">
                             <thead>
                             <tr>
@@ -349,7 +364,7 @@ class App extends Component {
                                     Label
                                 </th>
                                 <th className='table-header'>
-                                    Time (Sec)
+                                    Time (seconds after start)
                                 </th>
                             </tr>
                             </thead>
@@ -371,9 +386,18 @@ class App extends Component {
                             }
                             </tbody>
                         </table>
-
+                        <div className="input-section-timestamp">
+                            <div className="double-input">
+                                <TimestampInput placeholder={"Input new timestamp label (optional)"} value={this.state.newTimestampInputLabelValue} onKeyPress={() => this.handleAddNewTimestamp()} onChange={e => this.handleNewInputLabelChange(e)}/>
+                                <TimestampInput refFunction={ref => this.handleGotRef(ref)} placeholder={"Input new timestamp time"} value={this.state.newTimestampInputTimeValue} onKeyPress={() => this.handleAddNewTimestamp()} onChange={e => this.handleNewInputTimeChange(e)}/>
+                                <p className="tooltip">Timestamps can be input as minutes:seconds or seconds</p>
+                            </div>
+                            <button className="add-button" onClick={() => this.handleAddNewTimestamp()}>Add Timestamp</button>
+                        </div>
                     </div>
                     <div className="cds-section">
+                        <p className="app-description">Input available CDs on your team below</p>
+
                         <table className="cds-table">
                             <thead>
                             <tr>
@@ -407,54 +431,45 @@ class App extends Component {
 
                             </tbody>
                         </table>
-                    </div>
-                </div>
-                <div className="inputs-section">
-                    <div className="input-section-timestamp">
-                        <div className="double-input">
-                            <TimestampInput placeholder={"Input new timestamp label (optional)"} value={this.state.newTimestampInputLabelValue} onKeyPress={() => this.handleAddNewTimestamp()} onChange={e => this.handleNewInputLabelChange(e)}/>
-                            <TimestampInput refFunction={ref => this.handleGotRef(ref)} placeholder={"Input new timestamp time"} value={this.state.newTimestampInputTimeValue} onKeyPress={() => this.handleAddNewTimestamp()} onChange={e => this.handleNewInputTimeChange(e)}/>
-                            <p className="tooltip">Timestamps can be input as minutes:seconds or seconds</p>
+                        <div className="input-section-cooldowns">
+                            <div className="double-input">
+                                <TimestampInput showSuggestions={true} onAdd={(name, cooldown) => this.handleAutocomplete(name, cooldown)} placeholder={"Input new CD Name"} value={this.state.newCooldownNameInputValue} onKeyPress={() => this.handleAddNewCDInput()} onChange={e => this.handleNewCDNameInputChange(e)}/>
+                                <TimestampInput placeholder={"Input new CD Cooldown"}  value={this.state.newCooldownInputValue} onKeyPress={() => this.handleAddNewCDInput()} onChange={e => this.handleNewCDInputChange(e)}/>
+                                <TimestampInput placeholder={"Input new CD Player (optional)"}  value={this.state.newCooldownPersonInputValue} onKeyPress={() => this.handleAddNewCDInput()} onChange={e => this.handleNewCDPersonInputChange(e)}/>
+                            </div>
+                            <button className="add-button" onClick={() => this.handleAddNewCDInput()}>Add Cooldown</button>
                         </div>
-                        <button className="add-button" onClick={() => this.handleAddNewTimestamp()}>Add Timestamp</button>
                     </div>
-                    <div className="input-section-cooldowns">
-                        <div className="double-input">
-                            <TimestampInput showSuggestions={true} onAdd={(name, cooldown) => this.handleAutocomplete(name, cooldown)} placeholder={"Input new CD Name"} value={this.state.newCooldownNameInputValue} onKeyPress={() => this.handleAddNewCDInput()} onChange={e => this.handleNewCDNameInputChange(e)}/>
-                            <TimestampInput placeholder={"Input new CD Cooldown"}  value={this.state.newCooldownInputValue} onKeyPress={() => this.handleAddNewCDInput()} onChange={e => this.handleNewCDInputChange(e)}/>
-                            <TimestampInput placeholder={"Input new CD Player (optional)"}  value={this.state.newCooldownPersonInputValue} onKeyPress={() => this.handleAddNewCDInput()} onChange={e => this.handleNewCDPersonInputChange(e)}/>
-                        </div>
-                        <button className="add-button" onClick={() => this.handleAddNewCDInput()}>Add Cooldown</button>
-                    </div>
-
                 </div>
                 <button className="simulate-button" onClick={() => this.simulateBestSetup()}>Simulate</button>
-
-                <table className="solution-table">
-                    <thead className="solution-table-head">
-                    <tr>
-                        <th>Ability Name</th>
-                        <th>Player Name</th>
-                        <th>Ability CD</th>
-                        <th>Timestamp Label</th>
-                        <th>Timestamp</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        this.state.simulationSolution.map((elem, index) => (
-                            <tr key={elem.name + '-' + index} className="solution-row">
-                                <td className="solution-td">{elem.name}</td>
-                                <td className="solution-td">{elem.person}</td>
-                                <td className="solution-td">{elem.cooldown}</td>
-                                <td className="solution-td">{elem.timestamp.label}</td>
-                                <td className="solution-td">{this.toMinutes(elem.timestamp.time)}</td>
+                {
+                    this.state.simulationSolution.length > 0 ?
+                        <table className="solution-table">
+                            <thead className="solution-table-head">
+                            <tr>
+                                <th>Ability Name</th>
+                                <th>Player Name</th>
+                                <th>Ability CD</th>
+                                <th>Timestamp Label</th>
+                                <th>Timestamp</th>
                             </tr>
-                        ))
-                    }
-                    </tbody>
-                </table>
-
+                            </thead>
+                            <tbody>
+                            {
+                                this.state.simulationSolution.map((elem, index) => (
+                                    <tr key={elem.name + '-' + index} className="solution-row">
+                                        <td className="solution-td">{elem.name}</td>
+                                        <td className="solution-td">{elem.person}</td>
+                                        <td className="solution-td">{elem.cooldown}</td>
+                                        <td className="solution-td">{elem.timestamp.label}</td>
+                                        <td className="solution-td">{this.toMinutes(elem.timestamp.time) + (elem.slackUsed ? ' (+'  + elem.slackUsed + ')' : '')}</td>
+                                    </tr>
+                                ))
+                            }
+                            </tbody>
+                        </table>
+                        : null
+                }
             </div>
         );
     }
