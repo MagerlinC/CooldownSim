@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import './App.scss';
 import {cds} from './cds.json';
 import TimestampInput from "./TimestampInput";
+import Menu from '../src/assets/menu-button.svg';
+import Settings from '../src/assets/settings.svg';
 
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            slack: 4,
+            slack: localStorage.getItem('slack') ? Number(localStorage.getItem('slack')) : 0,
             inputTimeStamps: this.getLocalStorageTimestamps(),
             inputCDs: [{name: 'Aura Mastery', person: "Paladin", cooldown: 180}],
             newTimestampInputLabelValue: '',
@@ -16,6 +18,8 @@ class App extends Component {
             newCooldownInputValue: '',
             newCooldownPersonInputValue: '',
             simulationSolution: [],
+            optionsExpanded: false,
+            menuExpanded: false,
         };
     }
 
@@ -100,7 +104,6 @@ class App extends Component {
         let labelVal = this.state.newTimestampInputLabelValue ? this.state.newTimestampInputLabelValue : ('L' + (this.state.inputTimeStamps.length+1))
         let timeVal = this.state.newTimestampInputTimeValue.includes(':') ?
             this.toSeconds(this.state.newTimestampInputTimeValue) : this.state.newTimestampInputTimeValue;
-        console.log(timeVal);
         let id = this.guid();
 
         if(timeVal) {
@@ -233,7 +236,10 @@ class App extends Component {
     getMaxPossibleCDUsesInTotalTime(cd, totalTime) {
         //No decimals
         let fraction = totalTime/(cd.cooldown - this.state.slack);
-        return Math.floor(fraction);
+        if (fraction > 0) {
+            return Math.floor(fraction);
+
+        } else return 99;
     }
 
     getNooneCanMultiUse(cds) {
@@ -250,7 +256,7 @@ class App extends Component {
         let timeStamps = this.state.inputTimeStamps.slice();
         let cds = this.state.inputCDs.slice();
 
-        let slack = this.state.slack;
+        let slack = Number(this.state.slack);
 
         let numCds = cds.length;
         let numTimestamps = timeStamps.length;
@@ -270,7 +276,8 @@ class App extends Component {
 
         for(let i = 0; i < timeStamps.length; i++) {
             let cd = null;
-            if(numCds === 1 && cds[0].maxUses <= 1 && this.getTimeSinceLastUse(cds[0], timeStamps[i], solution)) {
+            if(numCds === 1 && ((this.getTimeSinceLastUse(cds[0], timeStamps[i], solution) + slack) >= cds[0].cooldown)) {
+                console.log('Adding cd ', cds[0]);
                 cd = cds[0];
             }
             for(let j = 0; j < cds.length && cd === null; j++) {
@@ -344,11 +351,52 @@ class App extends Component {
         return parseInt(''+mins) * 60 + parseInt(''+secs);
     }
 
+    toggleOptions() {
+        this.setState(prevState => {
+            return {optionsExpanded: !prevState.optionsExpanded, menuExpanded: false};
+        });
+    }
+
+    toggleMenu() {
+        this.setState(prevState => {
+            return {menuExpanded: !prevState.menuExpanded, optionsExpanded: false};
+        });
+    }
+
+    handleSlackInputChange(e) {
+        if(Number(e.target.value)) {
+            localStorage.setItem('slack', Number(e.target.value));
+            this.setState({slack: Number(e.target.value)});
+        }
+        else {
+            localStorage.setItem('slack', 0);
+            this.setState({slack: 0});
+        }
+    }
+
     render() {
         return (
             <div className="App">
                 <div className="app-header">
+                    <img src={Menu} className="burger-menu" onClick={() => this.toggleMenu()} />
+                    {
+                        this.state.menuExpanded ?
+                            <div className="menu-list">
+                                <p className="slack-input-header">Nothing yet, sorry!</p>
+                            </div>
+                            : null
+                    }
                     <h1 className="app-header-title">Optimal Healer CD Simulator</h1>
+                    <img src={Settings} onClick={() => this.toggleOptions()} className="settings-menu"/>
+                    {
+                        this.state.optionsExpanded ?
+                            <div className="options-list">
+                                <p className="slack-input-header">Slack</p>
+                                <input value={this.state.slack} placeholder="slack" className="slack-input" onChange={e => this.handleSlackInputChange(e)}/>
+                                <p className="tooltip">Control the accuracy of your timestamps</p>
+                            </div>
+                            : null
+                    }
                 </div>
                 <div className="tables-container">
                     <div className="timestamps-section">
