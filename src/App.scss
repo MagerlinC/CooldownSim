@@ -73,10 +73,13 @@ html {
 
 .suggestion-list {
   z-index: 2;
-  padding: 5px 0 10px 0;
+  align-self: center;
+  justify-self: center;
+  padding: 8px;
   background-color: #212121;
-  position: absolute;
-  width: 80%;
+  position: relative;
+  width: 88%;
+  right: 0;
   left: 50%;
   transform: translateX(-50%);
   .suggestion-item {
