@@ -1,0 +1,57 @@
+{
+  "cds": {
+    "list":
+    [
+      {
+        "name": "Aura Mastery",
+        "cooldown": 180,
+        "class": "Paladin"}
+    ,
+      {
+        "name": "Avenging Crusader",
+        "cooldown": 120,
+        "class": "Paladin"}
+    ,
+      {
+        "name": "Holy Word: Salvation (4min)",
+        "cooldown": 240,
+        "class": "Priest"
+      },
+      {
+        "name": "Holy Word: Salvation (5min)",
+        "cooldown": 300,
+        "class": "Priest"
+      },
+      {
+        "name": "Divine Hymn",
+        "cooldown": 180,
+        "class": "Priest"
+      },
+      {
+        "name": "Spirit Link Totem",
+        "cooldown": 180,
+        "class": "Shaman"
+      },
+      {
+        "name": "Healing Tide Totem",
+        "cooldown": 180,
+        "class": "Shaman"
+      },
+      {
+        "name": "Tranquility",
+        "cooldown": 180,
+        "class": "Druid"
+      },
+      {
+        "name": "Tranquility (2min)",
+        "cooldown": 120,
+        "class": "Druid"
+      },
+      {
+        "name": "Revival",
+        "cooldown": 180,
+        "class": "Monk"
+      }
+    ]
+  }
+}
