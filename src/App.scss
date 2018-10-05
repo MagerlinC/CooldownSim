@@ -9,7 +9,11 @@ html {
 .App {
   font-family: 'Roboto', sans-serif;
   text-align: center;
-  background: $accent-color url(https://dmszsuqyoe6y6.cloudfront.net/img/warcraft/header-bg.jpg?v=3);
+  background: $accent-color url(https://dmszsuqyoe6y6.cloudfront.net/img/warcraft/header-bg.jpg?v=3) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
   color: white;
   min-height: 100vh;
   padding-bottom: 15px;
@@ -104,6 +108,7 @@ html {
 }
 
 .cds-section, .timestamps-section{
+  width: 50vh;
   position: relative;
   flex-grow: 0.5;
   display: flex;
@@ -155,6 +160,7 @@ tr {
   height: 45px;
   text-transform: uppercase;
   color: white;
+  margin-top: 30px;
   background-color: $accent-color;
 }
 

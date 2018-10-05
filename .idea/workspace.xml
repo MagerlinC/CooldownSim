@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="efc0f91c-1307-4cf8-9fca-008ec9191664" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.firebase/hosting.YnVpbGQ.cache" afterPath="$PROJECT_DIR$/.firebase/hosting.YnVpbGQ.cache" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/App.js" afterPath="$PROJECT_DIR$/src/App.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/App.scss" afterPath="$PROJECT_DIR$/src/App.scss" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -57,8 +56,8 @@
       <file leaf-file-name="App.scss" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/App.scss">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="151" column="20" lean-forward="false" selection-start-line="151" selection-start-column="20" selection-end-line="151" selection-end-column="20" />
+            <state relative-caret-position="228">
+              <caret line="162" column="16" lean-forward="false" selection-start-line="162" selection-start-column="16" selection-end-line="162" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -75,7 +74,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>newTimestampLabelInput</find>
       <find>this.newTimeStamp</find>
       <find>newTimeStampLabelInputRef</find>
       <find>.focus(</find>
@@ -105,6 +103,7 @@
       <find>doubk</find>
       <find>app-header</find>
       <find>Simul</find>
+      <find>background: ur</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -307,12 +306,12 @@
       <option name="presentableId" value="Default" />
       <updated>1538604554126</updated>
       <workItem from="1538604555530" duration="23162000" />
-      <workItem from="1538756877646" duration="12972000" />
+      <workItem from="1538756877646" duration="13189000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="36134000" />
+    <option name="totallyTimeSpent" value="36351000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="797" extended-state="6" />
@@ -438,8 +437,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/App.scss">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="151" column="20" lean-forward="false" selection-start-line="151" selection-start-column="20" selection-end-line="151" selection-end-column="20" />
+        <state relative-caret-position="228">
+          <caret line="162" column="16" lean-forward="false" selection-start-line="162" selection-start-column="16" selection-end-line="162" selection-end-column="16" />
           <folding />
         </state>
       </provider>
