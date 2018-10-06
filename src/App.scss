@@ -17,6 +17,7 @@ html {
   color: white;
   min-height: 100vh;
   padding-bottom: 15px;
+  overflow-x: hidden;
 }
 
 .delete-x {
@@ -112,11 +113,14 @@ html {
 }
 
 .cds-section, .timestamps-section{
-  width: 50vh;
+  padding: 4px;
   position: relative;
   flex-grow: 0.5;
   display: flex;
-  margin: 10px;
+  top: 10px;
+  bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
   flex-direction: column;
   background-color: $main-color;
   table, tbody, thead {
@@ -244,6 +248,8 @@ tr {
     width: 150px;
     height: 150px;
     input {
+      width: 150px;
+      max-width: 140px;
       outline: none;
       border: none;
     }
@@ -284,3 +290,11 @@ tr {
   }
 }
 
+@media only screen and (max-width: 768px) {
+  .tables-container {
+    flex-direction: column;
+  }
+  .cds-section, .timestamps-section {
+    margin-bottom: 10px;
+  }
+}
