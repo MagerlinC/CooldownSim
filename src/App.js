@@ -498,7 +498,7 @@ class App extends Component {
                                 <th>Ability Name</th>
                                 <th>Player Name</th>
                                 <th>Ability CD</th>
-                                <th>Timestamp Label</th>
+                                <th>Label</th>
                                 <th>Timestamp</th>
                             </tr>
                             </thead>

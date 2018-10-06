@@ -24,7 +24,7 @@ html {
   position: absolute;
   right: 8%;
   top: 50%;
-  width: 6px;
+  width: 9px;
   transform: translateY(-50%);
   cursor: pointer;
 }
@@ -36,7 +36,7 @@ html {
   font-style: italic;
   color: grey;
   padding: 0 5px;
-  left: 5%;
+  left: 4%;
   height: 20px;
   top: 0;
 }
@@ -51,8 +51,8 @@ html {
 }
 
 .solution-table {
-  margin: 25px 10% 0 10%;
-  width: 80%;
+  margin: 10px;
+  width: calc(100% - 20px);
   table-layout: fixed;
   background-color: grey;
   .solution-table-head {
@@ -65,7 +65,7 @@ html {
     text-overflow: ellipsis;
   }
   td {
-    width: 33%;
+    width: 20%;
   }
 }
 
@@ -113,6 +113,7 @@ html {
 }
 
 .cds-section, .timestamps-section{
+  width: calc(50vh - 20px);
   padding: 4px;
   position: relative;
   flex-grow: 0.5;
@@ -238,10 +239,9 @@ tr {
   margin-top: 0;
   height: 65px;
   border-bottom: 1px solid grey;
-
   .options-list, .menu-list {
     position: absolute;
-    top: 85px;
+    top: 87px;
     z-index: 2;
     border-bottom: 1px solid #404040;
     background-color: $main-color;
@@ -296,5 +296,20 @@ tr {
   }
   .cds-section, .timestamps-section {
     margin-bottom: 10px;
+    width: calc(100% - 30px);
+  }
+  .delete-x {
+    width: 6px;
+  }
+  .app-header {
+    .app-header-title {
+
+      font-size: 20px;
+    }
+    .burger-menu, .settings-menu {
+      width: 25px;
+      height: 25px;
+      top: 50%;
+    }
   }
 }
